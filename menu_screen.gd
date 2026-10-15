@@ -70,19 +70,22 @@ func on_back() -> void:
 	get_tree().quit()
 
 
-func _deco(id: String, flip: bool) -> TextureRect:
-	var tr := TextureRect.new()
-	tr.texture = GameData.idle_frame(id)
-	tr.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	tr.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	tr.flip_h = flip
-	tr.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	tr.anchor_top = 0.2
-	tr.anchor_bottom = 1.0
+func _deco(id: String, flip: bool) -> Control:
+	var c := Control.new()
+	c.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	c.anchor_top = 0.2
+	c.anchor_bottom = 1.0
 	if flip:
-		tr.anchor_left = 0.72
-		tr.anchor_right = 1.0
+		c.anchor_left = 0.72
+		c.anchor_right = 1.0
 	else:
-		tr.anchor_left = 0.0
-		tr.anchor_right = 0.28
-	return tr
+		c.anchor_left = 0.0
+		c.anchor_right = 0.28
+	var rig := Rig.new()
+	rig.setup(id)
+	c.add_child(rig)
+	c.resized.connect(func():
+		var sc: float = minf(c.size.y / 175.0, c.size.x / 150.0)
+		rig.scale = Vector2(-sc if flip else sc, sc)
+		rig.position = Vector2(c.size.x * 0.5, c.size.y - 8.0))
+	return c

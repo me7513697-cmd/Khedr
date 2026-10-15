@@ -16,7 +16,7 @@ const MAX_CHAIN := 3
 
 var char_id := ""
 var stats: Dictionary = {}
-var sprite: AnimatedSprite2D
+var sprite: Rig
 var state: int = S.IDLE
 var state_t := 0.0
 var facing := 1
@@ -53,11 +53,8 @@ func setup(id: String) -> void:
 	special_type = stats["special_type"]
 	max_hp = stats["hp"]
 	hp = max_hp
-	sprite = AnimatedSprite2D.new()
-	sprite.sprite_frames = GameData.get_frames(id)
-	var cs := GameData.canvas_size(id)
-	sprite.centered = false
-	sprite.offset = Vector2(-cs.x / 2.0, -cs.y)
+	sprite = Rig.new()
+	sprite.setup(id)
 	sprite.scale = Vector2(SPRITE_SCALE, SPRITE_SCALE)
 	add_child(sprite)
 	_set_state(S.IDLE)
@@ -125,9 +122,7 @@ func _set_state(ns: int) -> void:
 		S.SPECIAL:
 			_play("special")
 		S.HURT:
-			sprite.animation = "fall"
-			sprite.frame = 1
-			sprite.pause()
+			sprite.show_pose("hurt")
 		S.KO:
 			_play("fall")
 
@@ -241,7 +236,7 @@ func _process_attack(delta: float, foe: Fighter) -> void:
 		if not proj_done and state_t >= t0:
 			proj_done = true
 			hit_done = true
-			projectile_spawned.emit(self, global_position + Vector2(facing * 84.0, -SPRITE_SCALE * 56.0), facing, float(stats["special_dmg"]))
+			projectile_spawned.emit(self, global_position + Vector2(facing * 70.0, -SPRITE_SCALE * 74.0), facing, float(stats["special_dmg"]))
 	elif kind_now == "special" and special_type == "slam":
 		if not hit_done and state_t >= t0:
 			hit_done = true
@@ -275,10 +270,7 @@ func _spawn_ghost() -> void:
 	var par := get_parent()
 	if par == null:
 		return
-	var g := Sprite2D.new()
-	g.texture = sprite.sprite_frames.get_frame_texture(sprite.animation, sprite.frame)
-	g.centered = false
-	g.offset = sprite.offset
+	var g := sprite.make_ghost()
 	g.scale = sprite.scale
 	g.position = position
 	g.z_index = -1
@@ -310,7 +302,7 @@ func take_hit(attacker: Fighter, info: Dictionary) -> bool:
 		s = float(info["side"])
 	if s == 0.0:
 		s = float(-facing)
-	var chest := global_position + Vector2(s * 34.0, -SPRITE_SCALE * 62.0)
+	var chest := global_position + Vector2(s * 30.0, -SPRITE_SCALE * 72.0)
 	if state == S.BLOCK and facing == int(s):
 		var chip := dmg * 0.12
 		hp = maxf(hp - chip, 1.0)

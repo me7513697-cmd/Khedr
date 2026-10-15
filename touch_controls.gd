@@ -24,15 +24,15 @@ func _layout() -> void:
 	var m := 30.0
 	buttons.clear()
 	# منصة الحركة على الشمال (شكل كبسولة زي شادو فايت)
-	buttons["left"] = {"c": Vector2(m + r * 1.05, h - m - r), "r": r, "icon": "left"}
-	buttons["right"] = {"c": Vector2(m + r * 3.25, h - m - r), "r": r, "icon": "right"}
+	buttons["left"] = {"c": Vector2(m + r * 1.05, h - m - r), "r": r, "icon": "شمال", "col": Color("#ffffff"), "edge": Color("#17c3b2")}
+	buttons["right"] = {"c": Vector2(m + r * 3.25, h - m - r), "r": r, "icon": "يمين", "col": Color("#ffffff"), "edge": Color("#17c3b2")}
 	# أزرار الهجوم على اليمين في قوس: لكمة (كبير تحت)، ركلة، خاص، صد
 	var px := w - m - r * 1.3
 	var py := h - m - r * 1.15
-	buttons["punch"] = {"c": Vector2(px, py), "r": r * 1.2, "icon": "fist"}
-	buttons["kick"] = {"c": Vector2(px - r * 2.45, py + r * 0.15), "r": r * 1.05, "icon": "boot"}
-	buttons["special"] = {"c": Vector2(px - r * 0.2, py - r * 2.3), "r": r * 0.95, "icon": "bolt"}
-	buttons["block"] = {"c": Vector2(px - r * 2.35, py - r * 1.75), "r": r * 0.88, "icon": "shield"}
+	buttons["punch"] = {"c": Vector2(px, py), "r": r * 1.2, "icon": "لكمة", "col": Color("#ffe03d"), "edge": Color("#ff2d78")}
+	buttons["kick"] = {"c": Vector2(px - r * 2.45, py + r * 0.15), "r": r * 1.05, "icon": "ركلة", "col": Color("#ff9f1c"), "edge": Color("#e71d36")}
+	buttons["special"] = {"c": Vector2(px - r * 0.2, py - r * 2.3), "r": r * 0.95, "icon": "خاصة", "col": Color("#5cf2d6"), "edge": Color("#7b2cbf")}
+	buttons["block"] = {"c": Vector2(px - r * 2.35, py - r * 1.75), "r": r * 0.88, "icon": "صد", "col": Color("#4cc9f0"), "edge": Color("#3a0ca3")}
 	queue_redraw()
 
 
@@ -160,10 +160,14 @@ func _draw() -> void:
 			draw_circle(c, rr, Color(1.0, 0.8, 0.2, 0.18))
 		draw_arc(c, rr, 0.0, TAU, 48, ring, 3.5, true)
 		draw_arc(c, rr * 0.86, 0.0, TAU, 48, Color(ring, ring.a * 0.35), 1.5, true)
-		var ic := Color(1, 1, 1, 0.95 if down else 0.82)
+		var ic: Color = b["col"]
+		var ec: Color = b["edge"]
+		if down:
+			ic = Color.WHITE
 		if id == "special" and not special_ready:
-			ic = Color(1, 1, 1, 0.4)
-		_icon(b["icon"], c, rr * 0.5, ic)
+			ic = Color(ic, 0.4)
+			ec = Color(ec, 0.4)
+		Graffiti.draw_text(self, b["icon"], c, int(rr * 0.62), ic, -0.06, ec, false, rr * 1.65)
 
 
 func _poly(c: Vector2, s: float, pts: Array, col: Color) -> void:

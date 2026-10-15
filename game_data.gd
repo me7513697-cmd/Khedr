@@ -61,61 +61,12 @@ const SPECIALS := {
 	"slam": {"dur": 0.95, "hit": [0.45, 0.50], "reach": 270.0, "knock": 520.0, "stun": 0.70, "lunge": 0.0, "lunge_win": [0.0, 0.0], "shake": 18.0},
 }
 
-static var _frames_cache := {}
-static var _canvas_cache := {}
-
-
-static func get_frames(id: String) -> SpriteFrames:
-	if _frames_cache.has(id):
-		return _frames_cache[id]
-	var base := "res://%s_" % id
-	var meta: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(base + "atlas.json"))
-	var atlas: Texture2D = load(base + "atlas.png")
-	var cw: int = int(meta["cw"])
-	var ch: int = int(meta["ch"])
-	var cols: int = int(meta["cols"])
-	var sf := SpriteFrames.new()
-	if sf.has_animation("default"):
-		sf.remove_animation("default")
-	for anim in ANIMS.keys():
-		sf.add_animation(anim)
-		var info: Array = meta["anims"][anim]
-		var start: int = int(info[0])
-		var n: int = int(info[1])
-		for i in n:
-			var idx := start + i
-			var tex := AtlasTexture.new()
-			tex.atlas = atlas
-			tex.region = Rect2((idx % cols) * cw, (idx / cols) * ch, cw, ch)
-			sf.add_frame(anim, tex)
-		var cfg: Dictionary = ANIMS[anim]
-		sf.set_animation_loop(anim, cfg["loop"])
-		var fps: float = 10.0
-		if cfg.has("fps"):
-			fps = cfg["fps"]
-		elif n > 0:
-			fps = float(n) / float(cfg["dur"])
-		sf.set_animation_speed(anim, fps)
-	_frames_cache[id] = sf
-	return sf
-
-
-static func canvas_size(id: String) -> Vector2:
-	if _canvas_cache.has(id):
-		return _canvas_cache[id]
-	var sf := get_frames(id)
-	var tex: Texture2D = sf.get_frame_texture("idle", 0)
-	var v := Vector2(tex.get_width(), tex.get_height())
-	_canvas_cache[id] = v
-	return v
+static func head(id: String) -> Texture2D:
+	return load("res://head_%s.png" % id)
 
 
 static func portrait(id: String) -> Texture2D:
 	return load("res://portrait_%s.png" % id)
-
-
-static func idle_frame(id: String) -> Texture2D:
-	return get_frames(id).get_frame_texture("idle", 0)
 
 
 ## سلّم الأركيد: 3 مباريات، الأخيرة ضد زعيم أقوى.

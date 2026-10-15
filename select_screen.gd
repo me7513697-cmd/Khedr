@@ -35,7 +35,7 @@ func _ready() -> void:
 	var back := UIKit.button("رجوع", Vector2(150, 54), 24)
 	back.pressed.connect(func(): main.goto_menu())
 	top.add_child(back)
-	var title := UIKit.label("اختار مقاتلك" if mode == "arcade" else "مواجهة سريعة", 44, UIKit.GOLD, 6)
+	var title := GLabel.make("اختار مقاتلك" if mode == "arcade" else "مواجهة سريعة", 54, Color("#ffe03d"), Color("#ff2d78"), -0.02, false)
 	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	top.add_child(title)
 	var spacer := Control.new()

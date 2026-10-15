@@ -27,12 +27,12 @@ static func make_theme(font: Font) -> Theme:
 	t.default_font = font
 	t.default_font_size = 28
 	t.set_color("font_color", "Label", Color.WHITE)
-	t.set_color("font_color", "Button", Color.WHITE)
-	t.set_color("font_hover_color", "Button", GOLD)
-	t.set_color("font_pressed_color", "Button", GOLD)
-	t.set_stylebox("normal", "Button", box(Color(RED, 0.92), GOLD))
-	t.set_stylebox("hover", "Button", box(Color(RED.lightened(0.15), 0.95), GOLD))
-	t.set_stylebox("pressed", "Button", box(Color(RED.darkened(0.3), 1.0), Color.WHITE))
+	var clear := Color(0, 0, 0, 0)
+	for k in ["font_color", "font_hover_color", "font_pressed_color", "font_disabled_color", "font_focus_color", "font_hover_pressed_color"]:
+		t.set_color(k, "Button", clear)
+	t.set_stylebox("normal", "Button", box(Color(0.07, 0.03, 0.05, 0.86), GOLD))
+	t.set_stylebox("hover", "Button", box(Color(0.16, 0.05, 0.08, 0.92), GOLD))
+	t.set_stylebox("pressed", "Button", box(Color(0.3, 0.06, 0.1, 0.96), Color.WHITE))
 	t.set_stylebox("focus", "Button", StyleBoxEmpty.new())
 	return t
 
@@ -53,7 +53,7 @@ static func label(text: String, size := 28, color := Color.WHITE, outline := 0) 
 
 
 static func button(text: String, min_size := Vector2(300, 74), font_size := 32) -> Button:
-	var b := Button.new()
+	var b := GButton.new()
 	b.text = text
 	b.custom_minimum_size = min_size
 	b.add_theme_font_size_override("font_size", font_size)
